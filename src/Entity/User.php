@@ -69,7 +69,7 @@ class User implements UserInterface
     private $lastName;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $apiToken;
 
@@ -87,7 +87,7 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $this->roles = ['ROLE_READER'];
+        $this->roles = ['ROLE_USER'];
     }
 
     public function getId(): ?int
