@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Label;
 use App\Entity\TodoList;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -120,5 +121,37 @@ class TodoListController extends AbstractController
             'message' => 'TODO list deleted!'
         ],
             Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/api/todo-lists/{todoList<\d+>}/lables/{label<\d+>}/add", methods={"POST"})
+     */
+    public function addLableAction(TodoList $todoList, Label $label)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $todoList->addLabel($label);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($todoList);
+        $em->flush();
+
+        return $this->json($todoList);
+    }
+
+    /**
+     * @Route("/api/todo-lists/{todoList<\d+>}/lables/{label<\d+>}/remove", methods={"DELETE"})
+     */
+    public function removeLabelAction(TodoList $todoList, Label $label)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $todoList->removeLabel($label);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($todoList);
+        $em->flush();
+
+        return $this->json($todoList);
     }
 }
