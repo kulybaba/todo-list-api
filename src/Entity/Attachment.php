@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AttachmentRepository")
  */
-class Attachment
+class Attachment implements \JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -79,5 +79,14 @@ class Attachment
         }
 
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'type' => $this->getType(),
+            'src' => $this->getSrc()
+        ];
     }
 }

@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\LabelRepository")
  * @UniqueEntity(fields="text", message="Email already taken")
  */
-class Label
+class Label implements \JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -87,5 +87,13 @@ class Label
         }
 
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'text' => $this->getText(),
+        ];
     }
 }

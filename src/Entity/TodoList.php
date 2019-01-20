@@ -5,12 +5,16 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\Timestampable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TodoListRepository")
  */
-class TodoList
+class TodoList implements \JsonSerializable
 {
+    use Timestampable;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -19,16 +23,27 @@ class TodoList
     private $id;
 
     /**
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     max="20",
+     *     min="2",
+     *     maxMessage="Name must contain maximum 50 characters.",
+     *     minMessage="Name must contain minimum 2 characters."
+     * )
+     * @var string
      * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @Assert\NotBlank()
+     * @Assert\DateTime()
+     * @ORM\Column(type="string")
      */
     private $expire;
 
     /**
+     * @Assert\NotBlank()
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="todoLists")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -40,11 +55,15 @@ class TodoList
     private $label;
 
     /**
+     * @Assert\NotBlank()
+     * @Assert\DateTime()
      * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
+     * @Assert\NotBlank()
+     * @Assert\DateTime()
      * @ORM\Column(type="datetime")
      */
     private $updated;
@@ -77,12 +96,12 @@ class TodoList
         return $this;
     }
 
-    public function getExpire(): ?\DateTimeInterface
+    public function getExpire(): ?string
     {
         return $this->expire;
     }
 
-    public function setExpire(\DateTimeInterface $expire): self
+    public function setExpire(string $expire): self
     {
         $this->expire = $expire;
 
@@ -180,5 +199,19 @@ class TodoList
         }
 
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'expire' => $this->getExpire(),
+            'user' => $this->getUser(),
+            'labels' => $this->getLabel(),
+            'items' => $this->getItems(),
+            'created' => $this->getCreated(),
+            'updated' => $this->getUpdated()
+        ];
     }
 }

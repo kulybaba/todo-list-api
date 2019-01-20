@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ItemRepository")
  */
-class Item
+class Item implements \JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -105,5 +105,16 @@ class Item
         $this->priority = $priority;
 
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'text' => $this->getText(),
+            'attachment' => $this->getAttachment(),
+            'completed' => $this->getCompleted(),
+            'priority' => $this->getPriority()
+        ];
     }
 }

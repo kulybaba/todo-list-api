@@ -19,6 +19,16 @@ class TodoListRepository extends ServiceEntityRepository
         parent::__construct($registry, TodoList::class);
     }
 
+    public function findAllTodoListsQuery()
+    {
+        return $this->createQueryBuilder('tl')
+            ->select('tl', 'u')
+            ->join('tl.user', 'u')
+            ->addSelect('u')
+            ->orderBy('tl.created', 'DESC')
+            ->getQuery();
+    }
+
     // /**
     //  * @return TodoList[] Returns an array of TodoList objects
     //  */
