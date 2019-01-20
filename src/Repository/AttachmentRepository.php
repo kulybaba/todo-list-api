@@ -19,6 +19,14 @@ class AttachmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Attachment::class);
     }
 
+    public function findAllAttachmentsQuery()
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a')
+            ->orderBy('a.id', 'DESC')
+            ->getQuery();
+    }
+
     // /**
     //  * @return Attachment[] Returns an array of Attachment objects
     //  */
