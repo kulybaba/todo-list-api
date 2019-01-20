@@ -90,4 +90,36 @@ class ItemController extends AbstractController
 
         return $this->json($item);
     }
+
+    /**
+     * @Route("/api/todo-lists/items/{id<\d+>}/check", methods={"PUT"})
+     */
+    public function checkAction(Item $item)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $item->setCompleted(true);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($item);
+        $em->flush();
+
+        return $this->json($item);
+    }
+
+    /**
+     * @Route("/api/todo-lists/items/{id<\d+>}/uncheck", methods={"PUT"})
+     */
+    public function uncheckAction(Item $item)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $item->setCompleted(false);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($item);
+        $em->flush();
+
+        return $this->json($item);
+    }
 }
