@@ -16,11 +16,13 @@ security:
             security: false
         main:
             anonymous: true
-
             pattern: ^/api/
             guard:
                 authenticators:
                     - App\Security\TokenAuthenticator
+
+            logout:
+                path: app_logout
 
             # activate different ways to authenticate
 
