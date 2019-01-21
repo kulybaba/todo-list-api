@@ -4,4 +4,3 @@
 
 app_logout:
     path: /api/logout
-

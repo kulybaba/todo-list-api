@@ -83,6 +83,9 @@
     "egulias/email-validator": {
         "version": "2.1.7"
     },
+    "exsyst/swagger": {
+        "version": "v0.4.1"
+    },
     "gedmo/doctrine-extensions": {
         "version": "v2.4.36"
     },
@@ -95,6 +98,15 @@
     "knplabs/knp-paginator-bundle": {
         "version": "v2.8.0"
     },
+    "nelmio/api-doc-bundle": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "c8e0c38e1a280ab9e37587a8fa32b251d5bc1c94"
+        }
+    },
     "nikic/php-parser": {
         "version": "v4.2.0"
     },
@@ -103,6 +115,15 @@
     },
     "ocramius/proxy-manager": {
         "version": "2.2.2"
+    },
+    "phpdocumentor/reflection-common": {
+        "version": "1.0.1"
+    },
+    "phpdocumentor/reflection-docblock": {
+        "version": "4.3.0"
+    },
+    "phpdocumentor/type-resolver": {
+        "version": "0.4.0"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -215,6 +236,9 @@
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
     },
+    "symfony/options-resolver": {
+        "version": "v4.2.2"
+    },
     "symfony/orm-pack": {
         "version": "v1.0.6"
     },
@@ -228,6 +252,9 @@
         "version": "v4.2.2"
     },
     "symfony/property-access": {
+        "version": "v4.2.2"
+    },
+    "symfony/property-info": {
         "version": "v4.2.2"
     },
     "symfony/routing": {
@@ -305,10 +332,16 @@
     "twig/twig": {
         "version": "v2.6.2"
     },
+    "webmozart/assert": {
+        "version": "1.4.0"
+    },
     "zendframework/zend-code": {
         "version": "3.3.1"
     },
     "zendframework/zend-eventmanager": {
         "version": "3.2.1"
+    },
+    "zircote/swagger-php": {
+        "version": "2.0.13"
     }
 }
