@@ -36,6 +36,8 @@ class UserController extends AbstractController
         $em->persist($user);
         $em->flush();
 
+        $userService->sendRegistrationEmail($user);
+
         return $this->json($user);
     }
 
