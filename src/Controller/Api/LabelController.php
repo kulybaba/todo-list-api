@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Label;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,6 +46,7 @@ class LabelController extends AbstractController
 
     /**
      * @Route("/api/labels/create", methods={"POST"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function createAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
     {
@@ -69,6 +71,7 @@ class LabelController extends AbstractController
 
     /**
      * @Route("/api/labels/{id<\d+>}/update", methods={"PUT"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function updateAction(Request $request, Label $label, SerializerInterface $serializer, ValidatorInterface $validator)
     {
@@ -95,6 +98,7 @@ class LabelController extends AbstractController
 
     /**
      * @Route("/api/labels/{id<\d+>}/delete", methods={"DELETE"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function deleteAction(Label $label)
     {
