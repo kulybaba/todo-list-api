@@ -44,7 +44,7 @@ class UserController extends AbstractController
     /**
      * @Route("/api/login", methods={"POST"})
      */
-    public function loginAction(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function loginAction(Request $request, UserPasswordEncoderInterface $passwordEncoder, UserService $userService)
     {
         if (!$request->getContent()) {
             throw new HttpException('400', 'Bad request');
@@ -58,6 +58,11 @@ class UserController extends AbstractController
         }
 
         $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+        $user->setApiToken($userService->generateApiToken());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($user);
+        $em->flush();
 
         if($user instanceof User) {
             if($passwordEncoder->isPasswordValid($user, $data['password'])) {
