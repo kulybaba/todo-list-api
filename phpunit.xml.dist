@@ -11,6 +11,7 @@
         <ini name="error_reporting" value="-1" />
         <env name="APP_ENV" value="test" />
         <env name="SHELL_VERBOSITY" value="-1" />
+        <env name="DATABASE_URL" value="mysql://petrokulybaba:11111111@127.0.0.1/db_todo_list" />
     </php>
 
     <testsuites>

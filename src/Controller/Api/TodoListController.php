@@ -126,7 +126,7 @@ class TodoListController extends AbstractController
     /**
      * @Route("/api/todo-lists/{todoList<\d+>}/lables/{label<\d+>}/add", methods={"POST"})
      */
-    public function addLableAction(TodoList $todoList, Label $label)
+    public function addLabelAction(TodoList $todoList, Label $label)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
