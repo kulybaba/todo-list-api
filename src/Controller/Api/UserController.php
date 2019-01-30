@@ -52,8 +52,7 @@ class UserController extends AbstractController
 
         $data = json_decode($request->getContent(), true);
 
-        if (!array_key_exists('email', $data) || !array_key_exists('password', $data))
-        {
+        if (!array_key_exists('email', $data) || !array_key_exists('password', $data)) {
             throw new HttpException('400', 'Bad request2');
         }
 
@@ -64,8 +63,8 @@ class UserController extends AbstractController
         $em->persist($user);
         $em->flush();
 
-        if($user instanceof User) {
-            if($passwordEncoder->isPasswordValid($user, $data['password'])) {
+        if ($user instanceof User) {
+            if ($passwordEncoder->isPasswordValid($user, $data['password'])) {
                 return $this->json($user);
             }
         }
