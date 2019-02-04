@@ -32,6 +32,10 @@ class UserController extends AbstractController
         $user->setPassword($userService->encodePassword($user));
         $user->setApiToken($userService->generateApiToken());
 
+        $customer = $userService->createCustomer($user);
+
+        $user->setCustomerId($customer['id']);
+
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
         $em->flush();

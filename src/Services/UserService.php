@@ -36,4 +36,14 @@ class UserService
             ->setBody('Congratulations! ' . $user->getFirstName() . ' ' . $user->getLastName() . ', you are successfully registered. ' . 'Email: ' . $user->getEmail() . '. Password: ' . $user->getPlainPassword() . '.');
         $this->mailer->send($message);
     }
+
+    public function createCustomer(User $user)
+    {
+        \Stripe\Stripe::setApiKey(getenv('SECRET_KEY'));
+
+        return $customer = \Stripe\Customer::create([
+            'email' => $user->getEmail(),
+            'description' => $user->getDescription(),
+        ]);
+    }
 }
