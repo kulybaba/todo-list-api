@@ -78,6 +78,10 @@ class TodoListController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+        if ($todoList->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
+
         if (!$request->getContent()) {
             throw new HttpException('400', 'Bad request');
         }
@@ -112,6 +116,10 @@ class TodoListController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+        if ($todoList->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
+
         $em = $this->getDoctrine()->getManager();
         $em->remove($todoList);
         $em->flush();
@@ -130,6 +138,10 @@ class TodoListController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+        if ($todoList->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
+
         $todoList->addLabel($label);
 
         $em = $this->getDoctrine()->getManager();
@@ -145,6 +157,10 @@ class TodoListController extends AbstractController
     public function removeLabelAction(TodoList $todoList, Label $label)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        if ($todoList->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
 
         $todoList->removeLabel($label);
 

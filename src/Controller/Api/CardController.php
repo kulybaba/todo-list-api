@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class CardController extends AbstractController
 {
     /**
-     * @Route("/api/payment/user/{id<\d+>}/cards/create", methods={"POST"})
+     * @Route("/api/payments/user/{id<\d+>}/cards/create", methods={"POST"})
      */
     public function createAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, User $user)
     {
@@ -29,7 +29,6 @@ class CardController extends AbstractController
         $card = $serializer->deserialize($request->getContent(), Card::class, JsonEncoder::FORMAT);
 
         \Stripe\Stripe::setApiKey(getenv('SECRET_KEY'));
-
         $cardToken = \Stripe\Token::create([
             'card' => [
                 'number' => $card->getNumber(),
@@ -38,13 +37,11 @@ class CardController extends AbstractController
                 'cvc' => $card->getCvc()
             ]
         ]);
-
         $customer = \Stripe\Customer::retrieve($user->getCustomerId());
-        $cardId = $customer->sources->create(["source" => $cardToken['id']]);
-
+        $customer->sources->create(["source" => $cardToken['id']]);
         $card->setUser($this->getUser());
-        $card->setLast4($cardId['last4']);
-        $card->setCardId($cardId['id']);
+        $card->setLast4($cardToken['card']['last4']);
+        $card->setCardToken($cardToken['id']);
 
         if (count($validator->validate($card))) {
             throw new HttpException('400', 'Bad request');
@@ -58,7 +55,7 @@ class CardController extends AbstractController
     }
 
     /**
-     * @Route("/api/payment/user/{user<\d+>}/cards/{userCard<\d+>}/set-name", methods={"PUT"})
+     * @Route("/api/payments/user/{user<\d+>}/cards/{userCard<\d+>}/set-name", methods={"PUT"})
      */
     public function setNameAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, User $user, Card $userCard)
     {
@@ -75,8 +72,9 @@ class CardController extends AbstractController
         }
 
         \Stripe\Stripe::setApiKey(getenv('SECRET_KEY'));
+        $cardToken = \Stripe\Token::retrieve($userCard->getCardToken());
         $customer = \Stripe\Customer::retrieve($user->getCustomerId());
-        $card = $customer->sources->retrieve($userCard->getCardId());
+        $card = $customer->sources->retrieve($cardToken['card']['id']);
         $card->name = $cardName['name'];
         $card->save();
 
@@ -90,15 +88,16 @@ class CardController extends AbstractController
     }
 
     /**
-     * @Route("/api/payment/user/{user<\d+>}/cards/{card<\d+>}/delete", methods={"DELETE"})
+     * @Route("/api/payments/user/{user<\d+>}/cards/{card<\d+>}/delete", methods={"DELETE"})
      */
     public function deleteAction(User $user, Card $card)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         \Stripe\Stripe::setApiKey(getenv('SECRET_KEY'));
+        $cardToken = \Stripe\Token::retrieve($card->getCardToken());
         $customer = \Stripe\Customer::retrieve($user->getCustomerId());
-        $customer->sources->retrieve($card->getCardId())->delete();
+        $customer->sources->retrieve($cardToken['card']['id'])->delete();
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($card);

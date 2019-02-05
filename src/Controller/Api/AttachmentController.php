@@ -50,6 +50,10 @@ class AttachmentController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+        if ($item->getTodoList()->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
+
         if (!$request->getContent()) {
             throw new HttpException('400', 'Bad request');
         }
@@ -74,6 +78,10 @@ class AttachmentController extends AbstractController
     public function deleteAction(Item $item)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        if ($item->getTodoList()->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($item->getAttachment());

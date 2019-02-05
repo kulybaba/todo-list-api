@@ -21,6 +21,10 @@ class ItemController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+        if ($todoList->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
+
         if (!$request->getContent()) {
             throw new HttpException('400', 'Bad request');
         }
@@ -46,6 +50,10 @@ class ItemController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+        if ($todoList->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
+
         $todoList->removeItem($item);
 
         $em = $this->getDoctrine()->getManager();
@@ -61,6 +69,10 @@ class ItemController extends AbstractController
     public function updateAction(Request $request, Item $item, SerializerInterface $serializer, ValidatorInterface $validator)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        if ($item->getTodoList()->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
 
         if (!$request->getContent()) {
             throw new HttpException('400', 'Bad request');
@@ -98,6 +110,10 @@ class ItemController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+        if ($item->getTodoList()->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
+
         $item->setCompleted(true);
 
         $em = $this->getDoctrine()->getManager();
@@ -113,6 +129,10 @@ class ItemController extends AbstractController
     public function uncheckAction(Item $item)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        if ($item->getTodoList()->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
 
         $item->setCompleted(false);
 

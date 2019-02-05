@@ -46,4 +46,13 @@ class UserService
             'description' => $user->getDescription(),
         ]);
     }
+
+    public function sendUnblockTodoListEmail(User $user)
+    {
+        $message = (new \Swift_Message('Symfony Blog - Unblocked todo list'))
+            ->setFrom('ahurtep@gmai.com')
+            ->setTo($user->getEmail())
+            ->setBody('Congratulations! ' . $user->getFirstName() . ' ' . $user->getLastName() . ', you are successfully unblocked todo list.');
+        $this->mailer->send($message);
+    }
 }
