@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use App\Entity\Card;
 use App\Entity\TodoList;
 use App\Services\UserService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -16,6 +17,7 @@ class PaymentController extends AbstractController
 {
     /**
      * @Route("/api/payments/list", methods={"GET"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function listAction(Request $request, $limit = 1)
     {
@@ -59,6 +61,7 @@ class PaymentController extends AbstractController
         ]);
 
         $todoList->setBlock(false);
+        $todoList->setExpire(date('Y-m-d H:i:s', strtotime('+3 days')));
         $em = $this->getDoctrine()->getManager();
         $em->persist($todoList);
         $em->flush();
