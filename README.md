@@ -6,4 +6,9 @@
 5. php bin/console d:m:m (php bin/console d:s:u -f)
 7. php bin/console s:r
 
+**Cron:**
+1. crontab -e
+2. Add: @daily php /home/(username)/(path to the project directory)/bin/console app:check-day-before-expire
+3. Save
+
 **API Documentation:** https://app.swaggerhub.com/apis/petrokulybaba/todo-list-api/1.0.0
