@@ -38,10 +38,10 @@ class CardController extends AbstractController
             ]
         ]);
         $customer = \Stripe\Customer::retrieve($user->getCustomerId());
-        $customer->sources->create(["source" => $cardToken['id']]);
+        $customerCard = $customer->sources->create(["source" => $cardToken['id']]);
         $card->setUser($this->getUser());
         $card->setLast4($cardToken['card']['last4']);
-        $card->setCardToken($cardToken['id']);
+        $card->setCardId($customerCard['id']);
 
         if (count($validator->validate($card))) {
             throw new HttpException('400', 'Bad request');
@@ -72,9 +72,8 @@ class CardController extends AbstractController
         }
 
         \Stripe\Stripe::setApiKey(getenv('SECRET_KEY'));
-        $cardToken = \Stripe\Token::retrieve($userCard->getCardToken());
         $customer = \Stripe\Customer::retrieve($user->getCustomerId());
-        $card = $customer->sources->retrieve($cardToken['card']['id']);
+        $card = $customer->sources->retrieve($userCard->getCardId());
         $card->name = $cardName['name'];
         $card->save();
 
@@ -95,9 +94,8 @@ class CardController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         \Stripe\Stripe::setApiKey(getenv('SECRET_KEY'));
-        $cardToken = \Stripe\Token::retrieve($card->getCardToken());
         $customer = \Stripe\Customer::retrieve($user->getCustomerId());
-        $customer->sources->retrieve($cardToken['card']['id'])->delete();
+        $customer->sources->retrieve($card->getCardId())->delete();
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($card);

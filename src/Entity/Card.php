@@ -52,7 +52,7 @@ class Card implements \JsonSerializable
      * @var string
      * @ORM\Column(type="string", length=255)
      */
-    private $cardToken;
+    private $cardId;
 
     /**
      * @Assert\NotBlank()
@@ -143,14 +143,14 @@ class Card implements \JsonSerializable
         return $this;
     }
 
-    public function getCardToken(): ?string
+    public function getCardId(): ?string
     {
-        return $this->cardToken;
+        return $this->cardId;
     }
 
-    public function setCardToken(string $cardToken): self
+    public function setCardId(string $cardId): self
     {
-        $this->cardToken = $cardToken;
+        $this->cardId = $cardId;
 
         return $this;
     }
@@ -209,7 +209,7 @@ class Card implements \JsonSerializable
             'id' => $this->getId(),
             'name' => $this->getName(),
             'last4' => $this->getLast4(),
-            'card_token' => $this->getCardToken(),
+            'card_id' => $this->getCardId(),
             'user' => $this->getUser(),
         ];
     }

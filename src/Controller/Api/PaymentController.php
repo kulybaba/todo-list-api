@@ -51,11 +51,10 @@ class PaymentController extends AbstractController
         }
 
         \Stripe\Stripe::setApiKey(getenv('SECRET_KEY'));
-        $cardToken = \Stripe\Token::retrieve($card->getCardToken());
-        $charge = \Stripe\Charge::create([
+         $charge = \Stripe\Charge::create([
             'amount' => 2000,
             'currency' => 'usd',
-            'source' => $cardToken['card']['id'],
+            'source' => $card->getCardId(),
             'customer' => $this->getUser()->getCustomerId(),
             'description' => $data['description']
         ]);
