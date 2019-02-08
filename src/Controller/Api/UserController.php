@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -23,7 +24,7 @@ class UserController extends AbstractController
             throw new HttpException('400', 'Bad request');
         }
 
-        $user = $serializer->deserialize($request->getContent(), User::class, 'json');
+        $user = $serializer->deserialize($request->getContent(), User::class, JsonEncoder::FORMAT);
 
         if (count($validator->validate($user))) {
             throw new HttpException('400', 'Bad request');
@@ -31,6 +32,10 @@ class UserController extends AbstractController
 
         $user->setPassword($userService->encodePassword($user));
         $user->setApiToken($userService->generateApiToken());
+
+        $customer = $userService->createCustomer($user);
+
+        $user->setCustomerId($customer['id']);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);

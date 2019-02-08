@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Label;
 use App\Entity\TodoList;
+use App\Services\TodoListService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,27 +20,35 @@ class TodoListController extends AbstractController
     /**
      * @Route("/api/todo-lists/list", methods={"GET"})
      */
-    public function listAction(Request $request, PaginatorInterface $paginator)
+    public function listAction(Request $request, PaginatorInterface $paginator, TodoListService $todoListService)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $query = $this->getDoctrine()->getRepository(TodoList::class)->findAllTodoListsQuery();
 
+        $todoLists = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            5
+        );
+
+        foreach ($todoLists as $todoList) {
+            $todoListService->checkExpire($todoList);
+        }
+
         return $this->json([
-            'todoLists' => $paginator->paginate(
-                $query,
-                $request->query->getInt('page', 1),
-                5
-            )
+            'todoLists' => $todoLists
         ]);
     }
 
     /**
      * @Route("/api/todo-lists/{id<\d+>}/view", methods={"GET"})
      */
-    public function viewAction(TodoList $todoList)
+    public function viewAction(TodoList $todoList, TodoListService $todoListService)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $todoListService->checkExpire($todoList);
 
         return $this->json($todoList);
     }
@@ -74,9 +83,15 @@ class TodoListController extends AbstractController
     /**
      * @Route("/api/todo-lists/{id<\d+>}/update", methods={"PUT"})
      */
-    public function updateAction(Request $request, TodoList $todoList, SerializerInterface $serializer, ValidatorInterface $validator)
+    public function updateAction(Request $request, TodoList $todoList, SerializerInterface $serializer, ValidatorInterface $validator, TodoListService $todoListService)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $todoListService->checkExpire($todoList);
+
+        if ($todoList->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
 
         if (!$request->getContent()) {
             throw new HttpException('400', 'Bad request');
@@ -108,9 +123,15 @@ class TodoListController extends AbstractController
     /**
      * @Route("/api/todo-lists/{id<\d+>}/delete", methods={"DELETE"})
      */
-    public function deleteAction(TodoList $todoList)
+    public function deleteAction(TodoList $todoList, TodoListService $todoListService)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $todoListService->checkExpire($todoList);
+
+        if ($todoList->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($todoList);
@@ -126,9 +147,15 @@ class TodoListController extends AbstractController
     /**
      * @Route("/api/todo-lists/{todoList<\d+>}/lables/{label<\d+>}/add", methods={"POST"})
      */
-    public function addLabelAction(TodoList $todoList, Label $label)
+    public function addLabelAction(TodoList $todoList, Label $label, TodoListService $todoListService)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $todoListService->checkExpire($todoList);
+
+        if ($todoList->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
 
         $todoList->addLabel($label);
 
@@ -142,9 +169,15 @@ class TodoListController extends AbstractController
     /**
      * @Route("/api/todo-lists/{todoList<\d+>}/lables/{label<\d+>}/remove", methods={"DELETE"})
      */
-    public function removeLabelAction(TodoList $todoList, Label $label)
+    public function removeLabelAction(TodoList $todoList, Label $label, TodoListService $todoListService)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $todoListService->checkExpire($todoList);
+
+        if ($todoList->getBlock()) {
+            throw new HttpException('400', 'Pay $20 to unblock the list.');
+        }
 
         $todoList->removeLabel($label);
 

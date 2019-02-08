@@ -73,10 +73,16 @@ class TodoList implements \JsonSerializable
      */
     private $items;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $block;
+
     public function __construct()
     {
         $this->label = new ArrayCollection();
         $this->items = new ArrayCollection();
+        $this->block = false;
     }
 
     public function getId(): ?int
@@ -205,6 +211,7 @@ class TodoList implements \JsonSerializable
     {
         return [
             'id' => $this->getId(),
+            'block' => $this->getBlock(),
             'name' => $this->getName(),
             'expire' => $this->getExpire(),
             'user' => $this->getUser(),
@@ -213,5 +220,17 @@ class TodoList implements \JsonSerializable
             'created' => $this->getCreated(),
             'updated' => $this->getUpdated()
         ];
+    }
+
+    public function getBlock(): ?bool
+    {
+        return $this->block;
+    }
+
+    public function setBlock(bool $block): self
+    {
+        $this->block = $block;
+
+        return $this;
     }
 }

@@ -92,10 +92,31 @@ class User implements UserInterface, \JsonSerializable
      */
     private $todoLists;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Card", mappedBy="user")
+     */
+    private $cards;
+
+    /**
+     * @Assert\Length(
+     *     max="255",
+     *     maxMessage="Description must contain maximum 255 characters.",
+     * )
+     * @var string
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $customer_id;
+
     public function __construct()
     {
         $this->roles = ['ROLE_USER'];
         $this->todoLists = new ArrayCollection();
+        $this->cards = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -264,7 +285,64 @@ class User implements UserInterface, \JsonSerializable
             'role' => $this->getRoles(),
             'email' => $this->getEmail(),
             'password' => $this->getPassword(),
-            'api_token' => $this->getApiToken()
+            'api_token' => $this->getApiToken(),
+            'customerId' => $this->getCustomerId(),
+            'description' => $this->getDescription()
         ];
+    }
+
+    /**
+     * @return Collection|Card[]
+     */
+    public function getCards(): Collection
+    {
+        return $this->cards;
+    }
+
+    public function addCard(Card $card): self
+    {
+        if (!$this->cards->contains($card)) {
+            $this->cards[] = $card;
+            $card->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCard(Card $card): self
+    {
+        if ($this->cards->contains($card)) {
+            $this->cards->removeElement($card);
+            // set the owning side to null (unless already changed)
+            if ($card->getUser() === $this) {
+                $card->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCustomerId(): ?string
+    {
+        return $this->customer_id;
+    }
+
+    public function setCustomerId(?string $customer_id): self
+    {
+        $this->customer_id = $customer_id;
+
+        return $this;
     }
 }
