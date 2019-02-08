@@ -10,9 +10,12 @@ class TodoListService extends AbstractController
 {
     private $em;
 
-    public function __construct(EntityManagerInterface $em)
+    private $userService;
+
+    public function __construct(EntityManagerInterface $em, UserService $userService)
     {
         $this->em = $em;
+        $this->userService = $userService;
     }
 
     public function checkExpire(TodoList $todoList)
@@ -27,5 +30,16 @@ class TodoListService extends AbstractController
         $todoList->setBlock(true);
         $this->em->persist($todoList);
         $this->em->flush();
+    }
+
+    public function checkDayBeforeExpire()
+    {
+        $todoLists = $this->em->getRepository(TodoList::class)->findAll();
+
+        foreach ($todoLists as $todoList) {
+            if (date('Y-m-d', strtotime('+1 day')) == $todoList->getExpire()) {
+                $this->userService->sendWarningBlockTodoListEmail($todoList->getUser());
+            }
+        }
     }
 }

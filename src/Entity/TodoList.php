@@ -37,7 +37,7 @@ class TodoList implements \JsonSerializable
 
     /**
      * @Assert\NotBlank()
-     * @Assert\DateTime()
+     * @Assert\Date()
      * @ORM\Column(type="string")
      */
     private $expire;

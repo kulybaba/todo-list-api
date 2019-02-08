@@ -55,4 +55,13 @@ class UserService
             ->setBody('Congratulations! ' . $user->getFirstName() . ' ' . $user->getLastName() . ', you are successfully unblocked todo list.');
         $this->mailer->send($message);
     }
+
+    public function sendWarningBlockTodoListEmail(User $user)
+    {
+        $message = (new \Swift_Message('Symfony Blog - Blocking todo list'))
+            ->setFrom('ahurtep@gmai.com')
+            ->setTo($user->getEmail())
+            ->setBody($user->getFirstName() . ' ' . $user->getLastName() . ', want to report. Your todo list will be blocked soon.');
+        $this->mailer->send($message);
+    }
 }
