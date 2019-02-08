@@ -20,7 +20,7 @@ class TodoListService extends AbstractController
 
     public function checkExpire(TodoList $todoList)
     {
-        if ($todoList->getExpire() < date('Y-m-d H:i:s')) {
+        if ($todoList->getExpire() < date('Y-m-d')) {
             $this->blockList($todoList);
         }
     }
