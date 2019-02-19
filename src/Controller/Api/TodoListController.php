@@ -90,7 +90,7 @@ class TodoListController extends AbstractController
         $todoListService->checkExpire($todoList);
 
         if ($todoList->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         if (!$request->getContent()) {
@@ -130,7 +130,7 @@ class TodoListController extends AbstractController
         $todoListService->checkExpire($todoList);
 
         if ($todoList->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -154,7 +154,7 @@ class TodoListController extends AbstractController
         $todoListService->checkExpire($todoList);
 
         if ($todoList->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         $todoList->addLabel($label);
@@ -176,7 +176,7 @@ class TodoListController extends AbstractController
         $todoListService->checkExpire($todoList);
 
         if ($todoList->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         $todoList->removeLabel($label);
