@@ -85,19 +85,7 @@ class ItemController extends AbstractController
             throw new HttpException('400', 'Bad request');
         }
 
-        $data = json_decode($request->getContent(), true);
-
-        if (array_key_exists('text', $data)) {
-            $item->setText($data['text']);
-        }
-
-        if (array_key_exists('completed', $data)) {
-            $item->setCompleted($data['completed']);
-        }
-
-        if (array_key_exists('priority', $data)) {
-            $item->setPriority($data['priority']);
-        }
+        $serializer->deserialize($request->getContent(), Item::class, JsonEncoder::FORMAT, ['object_to_populate' => $item]);
 
         if (count($validator->validate($item))) {
             throw new HttpException('400', 'Bad request');

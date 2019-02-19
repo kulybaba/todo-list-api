@@ -49,27 +49,23 @@ class UserController extends AbstractController
     /**
      * @Route("/api/login", methods={"POST"})
      */
-    public function loginAction(Request $request, UserPasswordEncoderInterface $passwordEncoder, UserService $userService)
+    public function loginAction(Request $request, UserPasswordEncoderInterface $passwordEncoder, UserService $userService, SerializerInterface $serializer)
     {
         if (!$request->getContent()) {
             throw new HttpException('400', 'Bad request');
         }
 
-        $data = json_decode($request->getContent(), true);
+        $data = $serializer->deserialize($request->getContent(), User::class, JsonEncoder::FORMAT);
 
-        if (!array_key_exists('email', $data) || !array_key_exists('password', $data)) {
-            throw new HttpException('400', 'Bad request2');
-        }
-
-        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['email' => $data['email']]);
-        $user->setApiToken($userService->generateApiToken());
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['email' => $data->getEmail()]);
 
         if ($user instanceof User) {
-            if ($passwordEncoder->isPasswordValid($user, $data['password'])) {
+            if ($passwordEncoder->isPasswordValid($user, $data->getPassword())) {
+                $user->setApiToken($userService->generateApiToken());
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($user);
+                $em->flush();
+
                 return $this->json($user);
             }
         }

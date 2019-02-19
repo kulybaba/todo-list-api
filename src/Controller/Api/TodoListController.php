@@ -97,15 +97,7 @@ class TodoListController extends AbstractController
             throw new HttpException('400', 'Bad request');
         }
 
-        $data = json_decode($request->getContent(), true);
-
-        if (array_key_exists('name', $data)) {
-            $todoList->setName($data['name']);
-        }
-
-        if (array_key_exists('expire', $data)) {
-            $todoList->setExpire($data['expire']);
-         }
+        $serializer->deserialize($request->getContent(), TodoList::class, JsonEncoder::FORMAT, ['object_to_populate' => $todoList]);
 
         $todoList->setUpdated(new \DateTime());
 
