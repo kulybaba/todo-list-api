@@ -65,19 +65,17 @@ class CardController extends AbstractController
             throw new HttpException('400', 'Bad request');
         }
 
-        $cardName = json_decode($request->getContent(), true);
+        $serializer->deserialize($request->getContent(), Card::class, JsonEncoder::FORMAT, ['object_to_populate' => $userCard]);
 
-        if (!array_key_exists('name', $cardName)) {
+        if (count($validator->validate($userCard, null, 'set_name'))) {
             throw new HttpException('400', 'Bad request');
         }
 
         \Stripe\Stripe::setApiKey(getenv('SECRET_KEY'));
         $customer = \Stripe\Customer::retrieve($user->getCustomerId());
         $card = $customer->sources->retrieve($userCard->getCardId());
-        $card->name = $cardName['name'];
+        $card->name = $userCard->getName();
         $card->save();
-
-        $userCard->setName($cardName['name']);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($userCard);

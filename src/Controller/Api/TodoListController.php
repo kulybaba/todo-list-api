@@ -90,22 +90,14 @@ class TodoListController extends AbstractController
         $todoListService->checkExpire($todoList);
 
         if ($todoList->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         if (!$request->getContent()) {
             throw new HttpException('400', 'Bad request');
         }
 
-        $data = json_decode($request->getContent(), true);
-
-        if (array_key_exists('name', $data)) {
-            $todoList->setName($data['name']);
-        }
-
-        if (array_key_exists('expire', $data)) {
-            $todoList->setExpire($data['expire']);
-         }
+        $serializer->deserialize($request->getContent(), TodoList::class, JsonEncoder::FORMAT, ['object_to_populate' => $todoList]);
 
         $todoList->setUpdated(new \DateTime());
 
@@ -130,7 +122,7 @@ class TodoListController extends AbstractController
         $todoListService->checkExpire($todoList);
 
         if ($todoList->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -154,7 +146,7 @@ class TodoListController extends AbstractController
         $todoListService->checkExpire($todoList);
 
         if ($todoList->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         $todoList->addLabel($label);
@@ -176,7 +168,7 @@ class TodoListController extends AbstractController
         $todoListService->checkExpire($todoList);
 
         if ($todoList->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         $todoList->removeLabel($label);

@@ -21,6 +21,7 @@ class Card implements \JsonSerializable
      * @Assert\Length(
      *     max="255",
      *     maxMessage="Name must contain maximum 255 characters.",
+     *     groups={"set_name"}
      * )
      * @var string
      * @ORM\Column(type="string", length=255, nullable=true)

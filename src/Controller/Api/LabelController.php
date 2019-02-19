@@ -81,13 +81,11 @@ class LabelController extends AbstractController
             throw new HttpException('400', 'Bad request');
         }
 
-        if (count($validator->validate($serializer->deserialize($request->getContent(), Label::class, JsonEncoder::FORMAT)))) {
+        $serializer->deserialize($request->getContent(), Label::class, JsonEncoder::FORMAT, ['object_to_populate' => $label]);
+
+        if (count($validator->validate($label))) {
             throw new HttpException('400', 'Bad request');
         }
-
-        $data = json_decode($request->getContent(), true);
-
-        $label->setText($data['text']);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($label);

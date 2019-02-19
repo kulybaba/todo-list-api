@@ -54,7 +54,7 @@ class AttachmentController extends AbstractController
         $todoListService->checkExpire($item->getTodoList());
 
         if ($item->getTodoList()->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         if (!$request->getContent()) {
@@ -85,7 +85,7 @@ class AttachmentController extends AbstractController
         $todoListService->checkExpire($item->getTodoList());
 
         if ($item->getTodoList()->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         $em = $this->getDoctrine()->getManager();

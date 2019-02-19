@@ -25,7 +25,7 @@ class ItemController extends AbstractController
         $todoListService->checkExpire($todoList);
 
         if ($todoList->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         if (!$request->getContent()) {
@@ -56,7 +56,7 @@ class ItemController extends AbstractController
         $todoListService->checkExpire($todoList);
 
         if ($todoList->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         $todoList->removeItem($item);
@@ -78,26 +78,14 @@ class ItemController extends AbstractController
         $todoListService->checkExpire($item->getTodoList());
 
         if ($item->getTodoList()->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         if (!$request->getContent()) {
             throw new HttpException('400', 'Bad request');
         }
 
-        $data = json_decode($request->getContent(), true);
-
-        if (array_key_exists('text', $data)) {
-            $item->setText($data['text']);
-        }
-
-        if (array_key_exists('completed', $data)) {
-            $item->setCompleted($data['completed']);
-        }
-
-        if (array_key_exists('priority', $data)) {
-            $item->setPriority($data['priority']);
-        }
+        $serializer->deserialize($request->getContent(), Item::class, JsonEncoder::FORMAT, ['object_to_populate' => $item]);
 
         if (count($validator->validate($item))) {
             throw new HttpException('400', 'Bad request');
@@ -120,7 +108,7 @@ class ItemController extends AbstractController
         $todoListService->checkExpire($item->getTodoList());
 
         if ($item->getTodoList()->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         $item->setCompleted(true);
@@ -142,7 +130,7 @@ class ItemController extends AbstractController
         $todoListService->checkExpire($item->getTodoList());
 
         if ($item->getTodoList()->getBlock()) {
-            throw new HttpException('400', 'Pay $20 to unblock the list.');
+            throw new HttpException('403', 'Pay $20 to unblock the list.');
         }
 
         $item->setCompleted(false);
